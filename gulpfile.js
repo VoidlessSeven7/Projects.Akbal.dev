@@ -11,69 +11,139 @@ const
   autoprefixer = require('autoprefixer'),
   cssnano = require('cssnano'),
   purgecss = require('@fullhuman/postcss-purgecss'),
-  uglify = require('gulp-uglify');
+  uglify = require('gulp-uglify'),
 
-  // development mode?
-  // devBuild = (process.env.NODE_ENV !== 'production'),
+  browserSync = require('browser-sync').create(), // Added for MDBGulp
+  rename = require('gulp-rename'), // Added for MDBGulp
+  sass = require('gulp-sass'), // Added for MDBGulp
+  fs = require('fs'), // Added for MDBGulp
 
-  // folders
-  src = './src/',
-  build = './build/'
-  ;
+  // Directories
+  dirSource = './src/',
+  dirDistribution = './dist/',
+  dirDependencies = './MDBGulp/', // Added for MDBGulp
 
-  // image processing
+  cssAddonsPath = './MDBGulp/css/modules/', // Added for MDBGulp
+
+  // CSS Processors settings
+  processors = [
+    autoprefixer({
+      browsers: ['last 10 versions'],
+      cascade: false
+    }),
+    cssnano()
+  ],
+
+  // Image processing settings
+  imageSettings = [
+
+    imagemin.gifsicle({
+      interlaced: true
+    }),
+    imagemin.jpegtran({
+      progressive: true
+    }),
+    imagemin.optipng({
+      optimizationLevel: 5
+    }),
+    imagemin.svgo({
+      plugins: [{
+          removeViewBox: true
+        },
+        {
+          cleanupIDs: false
+        }
+      ]
+    })
+  ];
+
+let out = '';
+
+// Image processing
 function images() {
 
-    const out = build + 'images/';
-  
-    return gulp.src(src + 'images/**/*')
-      .pipe(newer(out))
-      .pipe(imagemin({ optimizationLevel: 5 }))
-      .pipe(gulp.dest(out));
-  
-  };
-  exports.images = images;
+  out = dirDistribution + 'images/';
 
-  // HTML processing
-function html() {
-    const out = build;
-  
-    return gulp.src(src + '**/*.html')
-      .pipe(newer(out))
-      .pipe(htmlclean())
-      .pipe(gulp.dest(out));
-  }
-  exports.html = gulp.series(images, html);
-
-// FALTA JAVASCRIPT
-function js() {
-  const out = build;
-
-  return gulp.src(src + '**/*.js')
+  return gulp.src(dirSource + 'images/**/*')
     .pipe(newer(out))
-    .pipe(uglify())
+    .pipe(imagemin(imageSettings))
     .pipe(gulp.dest(out));
-}
-exports.js = js;
 
-// CSS processing
-function css() {
-  const out = build;
-  const testWhitelist = ['tooltip', 'fade', 'show'];
-  const testWhitelistPatterns = [/tooltip/];
+};
+exports.images = images;
 
-  return gulp.src(src + '**/*.css')
+// SASS compiling
+function sassCompile() {
+  out = dirDistribution + 'css/';
+
+  return gulp.src(dirDependencies + 'scss/*.scss')
     .pipe(newer(out))
-    .pipe(postcss([
-      assets({ loadPaths: ['images/'] }),
-      autoprefixer({ browsers: ['last 2 versions', '> 2%'] }),
-      purgecss({content: [src + '**/*.html'], whitelist: testWhitelist, whitelistPatterns: testWhitelistPatterns}),
-      cssnano
-    ]))
+    .pipe(sass({
+      outputStyle: 'nested'
+    }).on('error', sass.logError))
+    .pipe(postcss(processors))
+    .pipe(rename({
+      suffix: '.min'
+    }))
     .pipe(gulp.dest(out));
 
 }
-exports.css = gulp.series(images, css);
+exports.sass = gulp.series(sassCompile);
 
-// Run all tasks
-exports.build = gulp.parallel(exports.html, exports.css, exports.js);
+// CSS compiling
+function cssCompile() {
+  out = dirDistribution + 'css/';
+
+  return gulp.src(dirSource + 'css/*.css')
+    .pipe(newer(out))
+    .pipe(postcss(processors))
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(out));
+
+}
+exports.css = gulp.series(cssCompile);
+
+// SASS Modules compiling
+function sassCompileModules() {
+  out = dirDistribution;
+
+  return gulp.src(dirDependencies + 'scss/**/modules/**/*.scss')
+    .pipe(newer(out))
+    .pipe(sass({
+      outputStyle: 'nested'
+    }).on('error', sass.logError))
+    .pipe(postcss(processors))
+    .pipe(rename({
+      suffix: '.min',
+      dirname: cssAddonsPath
+    }))
+    .pipe(gulp.dest(out));
+
+}
+exports.cssmodules = gulp.series(sassCompileModules);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Build everything
+exports.build = gulp.parallel(exports.sassCompile, exports.cssCompile, exports.images);
