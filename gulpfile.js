@@ -102,11 +102,7 @@ function sassCompile() {
       outputStyle: 'nested'
     }).on('error', sass.logError))
     .pipe(postcss(processors))
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(out))
-    .pipe(browsersync.stream());
+    .pipe(gulp.dest(out));
 
 }
 exports.sassCompile = sassCompile;
@@ -118,8 +114,7 @@ function cssCompile() {
   return gulp
     .src(dirSource + 'css/*.css')
     .pipe(postcss(processors))
-    .pipe(gulp.dest(out))
-    .pipe(browsersync.stream());
+    .pipe(gulp.dest(out));
 
 }
 exports.cssCompile = cssCompile;
@@ -137,8 +132,7 @@ function sassCompileModules() {
     .pipe(rename({
       dirname: cssAddonsPath
     }))
-    .pipe(gulp.dest(out))
-    .pipe(browsersync.stream());
+    .pipe(gulp.dest(out));
 
 }
 exports.sassCompileModules = sassCompileModules;
@@ -153,7 +147,8 @@ function cssMinify() {
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(gulp.dest(out));
+    .pipe(gulp.dest(out))
+    .pipe(browsersync.stream());
 
 }
 exports.cssMinify = cssMinify;
@@ -217,7 +212,7 @@ function jsBuildMinify() {
 
   return gulp
     .src(dirDistribution + 'js/mdb.js')
-    .pipe(uglify())
+    //.pipe(uglify())
     .pipe(rename({
       suffix: '.min'
     }))
@@ -253,8 +248,8 @@ function nada() {
 function watchFiles() {
   gulp.watch(dirSource + 'css/**/*', gulp.series(cssCompile, cssMinify)); // Check for source CSS
   gulp.watch(dirSource + 'js/**/*', nada); // Check for source JS
-  gulp.watch(dirDependencies + 'scss/**/*.scss', sassCompile); // Check for dependency SCSS
-  gulp.watch(dirDependencies + 'js/**/*.js', gulp.series(jsbuild, jsbuildminify)); // Check for dependency JS
+  gulp.watch(dirDependencies + 'scss/**/*.scss', gulp.series(sassCompile, cssMinify)); // Check for dependency SCSS
+  gulp.watch(dirDependencies + 'js/**/*.js', gulp.series(jsBuild, jsBuildMinify)); // Check for dependency JS
   gulp.watch(
     [
       dirSource + 'html/**/*',
