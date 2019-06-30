@@ -1,3 +1,6 @@
 dist
 node_modules
-MDBGulp
+MDBGulp/*
+!MDBGulp/scss
+MDBGulp/scss/*
+!MDBGulp/scss/_custom-styles.scss
