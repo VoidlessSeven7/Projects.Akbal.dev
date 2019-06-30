@@ -12,12 +12,12 @@ const
   purgecss = require('@fullhuman/postcss-purgecss'),
   uglify = require('gulp-uglify'),
   del = require("del"),
-  fs = require("fs"),
 
   browsersync = require('browser-sync').create(), // Added for MDBGulp
   rename = require('gulp-rename'), // Added for MDBGulp
   sass = require('gulp-sass'), // Added for MDBGulp
   concat = require('gulp-concat'), // Added for MDBGulp
+  eslint = require('gulp-eslint'), // Added for MDBGulp
 
   // Directories
   dirSource = './src/',
@@ -117,7 +117,7 @@ function cssCompile() {
     .pipe(gulp.dest(out));
 
 }
-exports.cssCompile = cssCompile;
+exports.csscompile = cssCompile;
 
 // SASS Modules compiling
 function sassCompileModules() {
@@ -135,14 +135,14 @@ function sassCompileModules() {
     .pipe(gulp.dest(out));
 
 }
-exports.sassCompileModules = sassCompileModules;
+exports.sasscompilemodules = sassCompileModules;
 
 // CSS minifying
 function cssMinify() {
-  out = dirDistribution + 'css/';
+  out = dirDistribution;
 
   return gulp
-    .src(dirDistribution + 'css/*.css', '!' + dirDistribution + 'css/*.min.css', '!' + dirDistribution + 'css/bootstrap.css')
+    .src([dirDistribution + '**/*.css', '!' + dirDistribution + '**/*.min.css'])
     .pipe(postcss(minifiers))
     .pipe(rename({
       suffix: '.min'
@@ -151,37 +151,46 @@ function cssMinify() {
     .pipe(browsersync.stream());
 
 }
-exports.cssMinify = cssMinify;
-
-// SASS Modules minifying
-function sassMinifyModules() {
-  out = dirDistribution + 'css/modules/';
-
-  return gulp
-    .src(dirDistribution + 'css/modules/*.css', '!' + dirDistribution + 'css/modules/*.min.css')
-    .pipe(postcss(minifiers))
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(out))
-    .pipe(browsersync.stream());
-
-}
-exports.sassMinifyModules = sassMinifyModules;
+exports.cssminify = cssMinify;
 
 // ----------- JavaScript ----------- //
+
+function jsCompile() {
+  out = dirDistribution + 'js/';
+
+  return gulp
+    .src([dirSource + "js/", dirSource + "vendor/*.js"])
+    // .pipe(eslint())
+    // .pipe(eslint.format())
+    // .pipe(eslint.failAfterError())
+    .pipe(gulp.dest(out));
+
+}
+exports.jscompile = jsCompile;
+
+function jsMinify() {
+  out = dirDistribution;
+
+  return gulp
+    .src([dirDistribution + "**/*.js", "!" + dirDistribution + "**/*.min.js"])
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(out))
+    .pipe(browsersync.stream());
+
+}
+exports.jsminify = jsMinify;
+
+// ----------- MaterialDesignBootstrap JS ----------- //
 
 function getJSModules() {
   delete require.cache[require.resolve(dirDependencies + 'js/modules.js')];
   return require(dirDependencies + 'js/modules.js');
 }
 
-function getLiteJSModules() {
-  delete require.cache[require.resolve(dirDependencies + 'js/modules.lite.js')];
-  return require(dirDependencies + 'js/modules.lite.js');
-}
-
-function jsBuild() {
+function jsMDBBuild() {
   out = dirDistribution + 'js/';
 
   const plugins = getJSModules();
@@ -192,68 +201,20 @@ function jsBuild() {
     .pipe(gulp.dest(out));
 
 }
-exports.jsbuild = jsBuild;
-
-function jsBuildLite() {
-  out = dirDistribution + 'js/';
-
-  const pluginsLite = getLiteJSModules();
-
-  return gulp
-    .src(pluginsLite.modules)
-    .pipe(concat('mdb.lite.js'))
-    .pipe(gulp.dest(out));
-
-}
-exports.jsbuildlite = jsBuildLite;
-
-function jsBuildMinify() {
-  out = dirDistribution + 'js/';
-
-  return gulp
-    .src(dirDistribution + 'js/mdb.js')
-    //.pipe(uglify())
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(out))
-    .pipe(browsersync.stream());
-
-}
-exports.jsbuildminify = jsBuildMinify;
-
-function jsBuildMinifyLite() {
-  out = dirDistribution + 'js/';
-
-  return gulp
-    .src(dirDistribution + 'js/mdb.lite.js')
-    .pipe(uglify())
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(out))
-    .pipe(browsersync.stream());
-
-}
-exports.jsbuildminify = jsBuildMinifyLite;
+exports.jsmdbbuild = jsMDBBuild;
 
 // ----------- Utilities ----------- //
 
-// Replacer
-function nada() {
-  console.log('nada');
-}
-
 // Watch files
 function watchFiles() {
-  gulp.watch(dirSource + 'css/**/*', gulp.series(cssCompile, cssMinify)); // Check for source CSS
-  gulp.watch(dirSource + 'js/**/*', nada); // Check for source JS
-  gulp.watch(dirDependencies + 'scss/**/*.scss', gulp.series(sassCompile, cssMinify)); // Check for dependency SCSS
-  gulp.watch(dirDependencies + 'js/**/*.js', gulp.series(jsBuild, jsBuildMinify)); // Check for dependency JS
+  gulp.watch(dirDependencies + 'scss/**/*.scss', gulp.series(sassCompile, cssMinify)); // Check for MDB SCSS
+  gulp.watch(dirDependencies + 'js/**/*.js', gulp.series(jsMDBBuild, jsMinify)); // Check for MDB JS
+
+  gulp.watch(dirSource + '**/*.css', gulp.series(cssCompile, cssMinify)); // Check for source CSS
+  gulp.watch(dirSource + '**/*.js', gulp.series(jsCompile, jsMinify)); // Check for source JS
   gulp.watch(
     [
-      dirSource + 'html/**/*',
-      dirSource + 'index.html' // Check for HTML
+      dirSource + '**/*.html' // Check for source HTML
     ],
     gulp.series(html, browserSyncReload)
   );
@@ -286,4 +247,4 @@ exports.clean = clean;
 // ----------- Utilities for developing ----------- // 
 exports.watch = gulp.parallel(watchFiles, browserSync);
 
-exports.build = gulp.series(clean, html, sassCompile, sassCompileModules, cssCompile, jsBuild, gulp.parallel(cssMinify, sassMinifyModules, images, jsBuildMinify));
+exports.build = gulp.series(clean, html, sassCompile, sassCompileModules, cssCompile, jsMDBBuild, jsCompile, gulp.parallel(cssMinify, jsMinify, images));
