@@ -1,9 +1,35 @@
 // Your custom styles
 
+/* ------ Elementos nuevos ------ */
+
+.bg-radial-black {
+    background: linear-gradient(270deg, #000000, #212121) !important
+}
+
+/* ------ Añade a elementos ya existentes ------ */
 .modal-border-top {
     border-top: $modal-footer-border-width solid $modal-footer-border-color;
 }
 
-.vh-95 {
-    height: 95vh !important;
+.justify-content-unset {
+    justify-content: unset;
+}
+
+/* ------ Elementos de uso general ------ */
+
+.img-cover {
+    object-fit: cover;
+}
+
+/* ------ Gradientes ------ */
+
+.white-gradient {
+    background: linear-gradient(40deg, #ffffff, #c4fff2) !important
+}
+
+@include media-breakpoint-up(md) {
+    .vh-md-94 {
+        min-height: 94vh !important;
+        max-height: 94vh !important;
+    }
 }
