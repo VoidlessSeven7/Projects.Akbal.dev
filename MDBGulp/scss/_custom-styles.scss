@@ -21,6 +21,11 @@
     object-fit: cover;
 }
 
+.no-user-select,
+img {
+    user-select: none;
+}
+
 /* ------ Gradientes ------ */
 
 .white-gradient,

@@ -5,10 +5,15 @@ MDBGulp/*
 !MDBGulp/scss
 MDBGulp/scss/*
 !MDBGulp/scss/_custom-styles.scss
+!MDBGulp/scss/mdb.scss
+!MDBGulp/scss/mdb.scss.bak
 
 !MDBGulp/js
 MDBGulp/js/*
 !MDBGulp/js/modules.js
+!MDBGulp/js/modules.js.bak
 
 dist/*
 !dist/p
+src/vendor/brands.min.js
+src/vendor/regular.min.js

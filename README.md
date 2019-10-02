@@ -16,12 +16,16 @@ Website that embraces all my (public) projects!
 
 ## Todo
 
-- [ ] Add all my projects
+- [x] Add all my projects with submodules
 - [ ] Change from MDBootstrap to TailwindCSS
 - [x] Make robots.txt and other files available on gh-pages
+- [ ] Make art for the previews of the projects
+- [ ] Add name of project on hovering an image
+- [ ] Make custom colors and theming for the website
 
 ## Getting ready
-For building, you will need the MDBGulp Pro package
+For building, you will need MDBGulp Pro and FontAwesome Pro 
 - Extract MDBGulp Pro .zip in the ``MDBGulp`` directory without overwriting any file
+- Extract FontAwesome Pro brands and regular on ``src\vendor``
 - ``npm install``
 - ``gulp build``
