@@ -251,9 +251,9 @@ function browserSyncReload(done) {
   done();
 }
 
-// Delete production directory
+// Delete production directory but not the "p" directory so git submodules dont get removed
 function clean() {
-  return del([dirDistribution]);
+  return del([dirDistribution + "*", "!" + dirDistribution + "p"]);
 }
 exports.clean = clean;
 

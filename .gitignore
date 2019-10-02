@@ -1,9 +1,14 @@
-dist
 node_modules
+
 MDBGulp/*
+
 !MDBGulp/scss
 MDBGulp/scss/*
 !MDBGulp/scss/_custom-styles.scss
+
 !MDBGulp/js
 MDBGulp/js/*
 !MDBGulp/js/modules.js
+
+dist/*
+!dist/p
