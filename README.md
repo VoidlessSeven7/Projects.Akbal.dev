@@ -20,4 +20,8 @@ Website that embraces all my (public) projects!
 - [ ] Change from MDBootstrap to TailwindCSS
 - [x] Make robots.txt and other files available on gh-pages
 
-``` Warning: The "MDBGulp\js\modules.js" has to change the directories from "./js/ to ./MDBGulp/js/ so it doesnt error out" ```
+## Getting ready
+For building, you will need the MDBGulp Pro package
+- Extract MDBGulp Pro .zip in the ``MDBGulp`` directory without overwriting any file
+- ``npm install``
+- ``gulp build``
