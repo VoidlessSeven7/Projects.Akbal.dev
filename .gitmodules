@@ -1,3 +1,6 @@
 [submodule "p/TorrentMX-Web"]
 	path = p/TorrentMX-Web
 	url = https://github.com/VoidlessSeven7/TorrentMX-Web
+[submodule "p/Snug.chat-Web"]
+	path = p/Snug.chat-Web
+	url = https://github.com/VoidlessSeven7/Snug.chat-Web
