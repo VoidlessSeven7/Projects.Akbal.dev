@@ -1,14 +1,23 @@
-## Mi repertorio de proyectos
-Esta pagina alberga todos los proyectos (publicos) en los que he trabajado
+## Web Projects
+Website that embraces all my (public) projects!
 
-```De momento esta en desarrollo indefinido!```
+```On undefined halt until I have time and motivation```
 
-## Esta pagina la he hecho con las siguientes tecnologias web
+## Following web frameworks and technologies used
 
-- [x] **MDBootstrap** Increible framework para hacer paginas profesionales sin problema alguno || Gracias a Francesco <3
+- [x] **MDBootstrap** Front End || Thanks Francesco <3
 
-- [x] **FontAwesome Icons** Para los iconos || Gracias a Francesco <3
+- [x] **FontAwesome Icons** Icons || Gracias a Francesco <3
 
-- [x] **Bootstrap** es una dependencia
+- [x] **Bootstrap** dependencies
 
-- [x] **Jquery** es una dependencia
+- [x] **Jquery** dependencies
+
+
+## Todo
+
+- [ ] Add all my projects
+- [ ] Change from MDBootstrap to TailwindCSS
+- [x] Make robots.txt and other files available on gh-pages
+
+``` Warning: The "MDBGulp\js\modules.js" has to change the directories from "./js/ to ./MDBGulp/js/ so it doesnt error out" ```

@@ -10,7 +10,7 @@ const
   autoprefixer = require('autoprefixer'),
   cssnano = require('cssnano'),
   purgecss = require('@fullhuman/postcss-purgecss'),
-  uglify = require('gulp-uglify'),
+  terser = require('gulp-terser'),
   del = require("del"),
 
   browsersync = require('browser-sync').create(), // Added for MDBGulp
@@ -75,6 +75,16 @@ function html() {
 }
 exports.html = html;
 
+// Files that only have to be moved
+function files() {
+  const out = dirDistribution;
+
+  return gulp
+    .src([dirSource + '**/*.txt', dirSource + 'CNAME'])
+    .pipe(gulp.dest(out));
+}
+exports.files = files;
+
 // ----------- Image tampering ----------- // 
 
 // Image processing
@@ -87,7 +97,7 @@ function images() {
     .pipe(imagemin(imageSettings))
     .pipe(gulp.dest(out));
 
-};
+}
 exports.images = images;
 
 // ----------- SASS and CSS ----------- // 
@@ -159,7 +169,7 @@ function jsCompile() {
   out = dirDistribution + 'js/';
 
   return gulp
-    .src([dirSource + "js/", dirSource + "vendor/*.js"])
+    .src([dirSource + "js/", dirSource + "vendor/*.js"], { allowEmpty: true })
     // .pipe(eslint())
     // .pipe(eslint.format())
     // .pipe(eslint.failAfterError())
@@ -173,7 +183,10 @@ function jsMinify() {
 
   return gulp
     .src([dirDistribution + "**/*.js", "!" + dirDistribution + "**/*.min.js"])
-    .pipe(uglify())
+    .pipe(terser({
+      keep_fnames: true,
+      mangle: false
+    }))
     .pipe(rename({
       suffix: '.min'
     }))
@@ -247,4 +260,4 @@ exports.clean = clean;
 // ----------- Utilities for developing ----------- // 
 exports.watch = gulp.parallel(watchFiles, browserSync);
 
-exports.build = gulp.series(clean, html, sassCompile, sassCompileModules, cssCompile, jsMDBBuild, jsCompile, gulp.parallel(cssMinify, jsMinify, images));
+exports.build = gulp.series(clean, html, files, sassCompile, sassCompileModules, cssCompile, jsMDBBuild, jsCompile, gulp.parallel(cssMinify, jsMinify, images));

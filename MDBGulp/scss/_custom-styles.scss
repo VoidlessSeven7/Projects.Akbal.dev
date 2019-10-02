@@ -23,7 +23,8 @@
 
 /* ------ Gradientes ------ */
 
-.white-gradient {
+.white-gradient,
+html {
     background: linear-gradient(40deg, #ffffff, #c4fff2) !important
 }
 

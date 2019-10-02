@@ -4,3 +4,6 @@ MDBGulp/*
 !MDBGulp/scss
 MDBGulp/scss/*
 !MDBGulp/scss/_custom-styles.scss
+!MDBGulp/js
+MDBGulp/js/*
+!MDBGulp/js/modules.js
