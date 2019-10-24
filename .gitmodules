@@ -4,3 +4,7 @@
 [submodule "p/Snug.chat-Web"]
 	path = p/Snug.chat-Web
 	url = https://github.com/VoidlessSeven7/Snug.chat-Web
+[submodule "p/Material-Rule-34"]
+	path = p/Material-Rule-34
+	url = https://github.com/VoidlessSeven7/Material-Rule-34.git
+	branch = gh-pages
